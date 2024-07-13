@@ -1,11 +1,18 @@
 import express from "express";
 import {
+  addCategory,
   addProduct,
+  deleteCategory,
   deleteProduct,
+  editCategory,
   editProduct,
   filterOnProducts,
+  getAllCategoriesByDepartment,
+  getAllDepartments,
   getAllProducts,
   getCategoriesByDepartment,
+  getCategoryById,
+  getProductByCategory,
   getProductById,
   getProductTotalRating,
   getProductsByCategory,
@@ -29,4 +36,13 @@ router.get("/filters", filterOnProducts);
 router.get("/getproduct/:productId", getProductById);
 router.post("/products/:id/rate", rateProduct);
 router.get("/products/:id/rating", getProductTotalRating);
+
+router.get("/all-departments", getAllDepartments);
+router.get("/:departmentId/all-categories", getAllCategoriesByDepartment);
+router.get("/category/:categoryId", getCategoryById);
+router.post("/:departmentId/add-category", auth, addCategory);
+router.put("/edit-category/:categoryId", auth, editCategory);
+router.delete("/delete-category/:categoryId", auth, deleteCategory);
+router.get("/:categoryId/all-products", getProductByCategory);
+
 export default router;

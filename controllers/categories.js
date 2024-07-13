@@ -833,14 +833,14 @@ export const editVehicle = async (req, res) => {
   try {
     const vehicleId = req.params.id; // Assuming the ID of the vehicle to edit is passed as a URL parameter
     const updates = req.body; // Updated data for the vehicle
-
+    const adminId = process.env.ADMIN_ID;
     // Find the vehicle by its ID
     const vehicle = await Vehicle.findById(vehicleId);
 
     if (!vehicle) {
       return res.status(404).json({ message: "Vehicle not found" });
     }
-    if (req.userId != vehicle.creator) {
+    if (req.userId != vehicle.creator && req.userId != adminId) {
       return res.status(403).json("Error in Authurization");
     }
     if (req.files["image"]) {
@@ -904,12 +904,12 @@ export const editVehicle = async (req, res) => {
 export const deleteVehicle = async (req, res) => {
   try {
     const { id } = req.params;
-
+    const adminId = process.env.ADMIN_ID;
     const existingVehicle = await Vehicle.findById(id);
     if (!existingVehicle) {
       return res.status(404).json("Vehicle not found");
     }
-    if (req.userId != existingVehicle.creator) {
+    if (req.userId != existingVehicle.creator && req.userId != adminId) {
       return res.status(403).json("Error in Authurization");
     }
     // Delete the advertisement

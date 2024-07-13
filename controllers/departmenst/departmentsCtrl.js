@@ -435,10 +435,10 @@ export const editProduct = async (req, res) => {
       color,
       discountPercentage,
     } = req.body;
-
+    const adminId = process.env.ADMIN_ID;
     const productdata = await Product.findById(productId);
-    if (req.userId != productdata.owner) {
-      return res.status(403).json("Error in Authurization");
+    if (req.userId != productdata.owner && req.userId != adminId) {
+      return res.status(404).json("Error in Authurization");
     }
     let discountedPrice = price;
     if (discountPercentage != null) {
@@ -509,6 +509,7 @@ export const editProduct = async (req, res) => {
       );
     }
     if (!updatedProduct) {
+      console.error("error");
       return res.status(404).json({ message: "Product not found" });
     }
 
@@ -541,6 +542,7 @@ export const editProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const { productId } = req.params;
+    const adminId = process.env.ADMIN_ID;
     // const product = await Product.findById(productId);
 
     // deleteFile(product.imageUrl);
@@ -549,7 +551,7 @@ export const deleteProduct = async (req, res) => {
     if (!deletedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
-    if (req.userId != deletedProduct.owner) {
+    if (req.userId != deletedProduct.owner && req.userId !== adminId) {
       return res.status(403).json("Error in Authurization");
     }
     return res.status(200).json("success");
@@ -630,5 +632,144 @@ export const getProductTotalRating = async (req, res) => {
     res.json({ averageRating: existingProduct.averageRating });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAllDepartments = async (req, res) => {
+  try {
+    const departments = await Departments.find();
+    return res.status(200).json(departments);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAllCategoriesByDepartment = async (req, res) => {
+  try {
+    const { departmentId } = req.params;
+
+    const categories = await DepartmentsCategory.find({
+      department: departmentId,
+    }).populate({
+      path: "department",
+      select: "name",
+    });
+
+    return res.status(200).json(categories);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getCategoryById = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const category = await DepartmentsCategory.findById(categoryId).populate({
+      path: "department",
+      select: "name",
+    });
+    return res.status(200).json(category);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const addCategory = async (req, res) => {
+  try {
+    const { departmentId } = req.params;
+    const { name } = req.body;
+    const userId = req.userId;
+    const adminId = process.env.ADMIN_ID;
+    if (userId !== adminId) {
+      return res
+        .status(403)
+        .json("You don't have permission to make this action ");
+    }
+    const department = await Departments.findById(departmentId);
+    if (!department) return res.status(404).json("Department not found");
+    const imgPath =
+      req.files && req.files["image"] ? req.files["image"][0].path : null;
+    const img = imgPath
+      ? `${process.env.BASE_URL}/${imgPath.replace(/\\/g, "/")}`
+      : null;
+    const newCategory = new DepartmentsCategory({
+      name,
+      department: department._id,
+      imageUrl: img,
+    });
+
+    const savedCategory = await newCategory.save();
+    department.departmentsCategory.push(savedCategory._id);
+    await department.save();
+    return res.status(201).json(savedCategory);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const editCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+
+    const { name } = req.body;
+    const userId = req.userId;
+    const adminId = process.env.ADMIN_ID;
+    if (userId !== adminId) {
+      return res
+        .status(403)
+        .json("You don't have permission to make this action ");
+    }
+
+    const category = await DepartmentsCategory.findById(categoryId);
+    if (!category) return res.status(404).json("category not found");
+    if (name) category.name = name;
+    if (req.files && req.files["image"]) {
+      const imgPath = req.files["image"][0].path;
+      category.imageUrl = `${process.env.BASE_URL}/${imgPath.replace(
+        /\\/g,
+        "/"
+      )}`;
+    }
+    const updatedCategory = await category.save();
+    return res.status(200).json(updatedCategory);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const userId = req.userId;
+    const adminId = process.env.ADMIN_ID;
+    if (userId !== adminId) {
+      return res
+        .status(403)
+        .json("You don't have permission to make this action ");
+    }
+    const category = await DepartmentsCategory.findById(categoryId);
+    if (!category) return res.status(404).json("category not found");
+    const deletedCategory = await DepartmentsCategory.findByIdAndDelete(
+      categoryId
+    );
+    if (!deletedCategory) {
+      return res.status(500).json({ message: "Can't delete category" });
+    }
+    const department = await Departments.findById(deletedCategory.department);
+    department.departmentsCategory.pull(deletedCategory._id);
+    await department.save();
+    return res.status(200).json(deletedCategory);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getProductByCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const products = await Product.find({ category: categoryId });
+    return res.status(200).json(products);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };

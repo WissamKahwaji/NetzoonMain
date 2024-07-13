@@ -76,6 +76,7 @@ export const getAdvertisements = async (req, res) => {
       results: data,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       message: error.message,
     });
@@ -259,13 +260,13 @@ export const editAdvertisement = async (req, res) => {
       guarantee,
       contactNumber,
     } = req.body;
-
+    const adminId = process.env.ADMIN_ID;
     // Check if advertisement with the given ID exists
     const existingAd = await Advertisement.findById(id);
     if (!existingAd) {
       return res.status(404).json({ message: "Advertisement not found" });
     }
-    if (req.userId != existingAd.owner) {
+    if (req.userId != existingAd.owner && req.userId != adminId) {
       return res.status(403).json("Error in Authurization");
     }
 
@@ -334,13 +335,13 @@ export const editAdvertisement = async (req, res) => {
 export const deleteAdvertisement = async (req, res) => {
   try {
     const { id } = req.params;
-
+    const adminId = process.env.ADMIN_ID;
     const existingAd = await Advertisement.findById(id);
     if (!existingAd) {
       return res.status(404).json("Advertisement not found");
     }
 
-    if (req.userId != existingAd.owner) {
+    if (req.userId != existingAd.owner && req.userId !== adminId) {
       return res.status(403).json("Error in Authurization");
     }
     // Delete the advertisement

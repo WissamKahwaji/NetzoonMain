@@ -1038,6 +1038,8 @@ export const getUserByType = async (req, res) => {
 
 export const EditUser = async (req, res) => {
   const { userId } = req.params;
+
+  const adminId = process.env.ADMIN_ID;
   const {
     username,
     userType,
@@ -1077,7 +1079,7 @@ export const EditUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (req.userId != userId) {
+    if (req.userId != userId && req.userId !== adminId) {
       return res.status(403).json("Error in Authurization");
     }
 
@@ -1489,6 +1491,7 @@ export const deleteUser = async (req, res) => {
 
 export const deleteAccount = async (req, res) => {
   const { userId } = req.params;
+  const adminId = process.env.ADMIN_ID;
 
   try {
     const userToDelete = await userModel.findById(userId);
@@ -1497,7 +1500,7 @@ export const deleteAccount = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (req.userId != userId) {
+    if (req.userId != userId && req.userId !== adminId) {
       return res.status(403).json("Error in Authurization");
     }
     const userProducts = await Product.find({ owner: userId });

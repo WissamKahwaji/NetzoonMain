@@ -24,6 +24,83 @@ export const getServicesCategories = async (req, res) => {
   }
 };
 
+export const getServiceCategoryById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const category = await serviceCategoryModel.findById(id).select("title");
+    res.status(200).json(category);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const addServiceCategory = async (req, res) => {
+  try {
+    const { title } = req.body;
+    const userId = req.userId;
+    const adminId = process.env.ADMIN_ID;
+    if (userId !== adminId) {
+      return res
+        .status(403)
+        .json("You don't have permission to make this action ");
+    }
+    const newCategory = new serviceCategoryModel({
+      title,
+    });
+    const savedCategory = await newCategory.save();
+    res.status(201).json(savedCategory);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const editServiceCategory = async (req, res) => {
+  try {
+    console.log("asd");
+    const { id } = req.params;
+    const { title } = req.body;
+    const userId = req.userId;
+    const adminId = process.env.ADMIN_ID;
+    if (userId !== adminId) {
+      return res
+        .status(403)
+        .json("You don't have permission to make this action ");
+    }
+    const serviceCategory = await serviceCategoryModel.findById(id);
+    if (!serviceCategory) return res.status(403).json("category not found");
+    if (title) serviceCategory.title = title;
+    const updatedServiceCategory = await serviceCategory.save();
+    return res.status(201).json(updatedServiceCategory);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteServiceCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+    const adminId = process.env.ADMIN_ID;
+    if (userId !== adminId) {
+      return res
+        .status(403)
+        .json("You don't have permission to make this action ");
+    }
+    const deleteServiceCategory = await serviceCategoryModel.findByIdAndDelete(
+      id
+    );
+    if (!deleteServiceCategory)
+      return res.status(403).json("category not found");
+    return res.status(200).json("Success");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const getServicesByCategories = async (req, res) => {
   try {
     const { category, country } = req.query;
@@ -62,8 +139,8 @@ export const addCompanyService = async (req, res) => {
     console.log(req.query);
     const { category, country } = req.query;
     const { title, description, price, owner, whatsAppNumber, bio } = req.body;
-
-    if (req.userId != owner) {
+    const adminId = process.env.ADMIN_ID;
+    if (req.userId != owner && req.userId !== adminId) {
       return res.status(403).json("Error in Authurization");
     }
     const image = req.files["image"] ? req.files["image"][0] : null;
@@ -137,20 +214,20 @@ export const editCompanyService = async (req, res) => {
     const { id } = req.params;
     const { title, description, price, whatsAppNumber, bio } = req.body;
     console.log(req.body);
-
+    const adminId = process.env.ADMIN_ID;
     // Check if the company service with the given ID exists
     const existingService = await CompanyServices.findById(id);
     if (!existingService) {
       return res.status(404).json({ message: "Company service not found" });
     }
 
-    if (req.userId != existingService.owner) {
+    if (req.userId != existingService.owner && req.userId !== adminId) {
       return res.status(403).json("Error in Authurization");
     }
     // Update company service fields
     existingService.title = title;
     existingService.description = description;
-    if (price) {
+    if (price && price != "undefined") {
       existingService.price = price;
     }
     if (whatsAppNumber) {
@@ -208,14 +285,14 @@ export const editCompanyService = async (req, res) => {
 export const deleteCompanyService = async (req, res) => {
   try {
     const { id } = req.params;
-
+    const adminId = process.env.ADMIN_ID;
     // Check if the company service with the given ID exists
     const existingService = await CompanyServices.findById(id);
     if (!existingService) {
       return res.status(404).json("Company service not found");
     }
 
-    if (req.userId != existingService.owner) {
+    if (req.userId != existingService.owner && req.userId !== adminId) {
       return res.status(403).json("Error in Authurization");
     }
     // Delete the company service

@@ -19,6 +19,77 @@ export const getAllDealsCategories = async (req, res) => {
   }
 };
 
+export const getDealCategoryById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const dealsCat = await DealsCategories.findById(id);
+    if (!dealsCat) {
+      return res.status(404).json({ message: "no Data Found" });
+    }
+    return res.json(dealsCat);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const addDealsCategory = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const adminId = process.env.ADMIN_ID;
+    if (userId !== adminId) {
+      return res
+        .status(403)
+        .json("You don't have permission to make this action ");
+    }
+    const { name } = req.body;
+    const newCategory = new DealsCategories({
+      name,
+    });
+    const savedCategory = await newCategory.save();
+    return res.status(201).json(savedCategory);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+export const editDealsCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+    const adminId = process.env.ADMIN_ID;
+    if (userId !== adminId) {
+      return res
+        .status(403)
+        .json("You don't have permission to make this action ");
+    }
+    const { name } = req.body;
+    const category = await DealsCategories.findById(id);
+    if (!category) return res.status(403).json("Category not found");
+    if (name) category.name = name;
+    const updatedCategory = await category.save();
+    return res.status(200).json(updatedCategory);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteDealsCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+    const adminId = process.env.ADMIN_ID;
+    if (userId !== adminId) {
+      return res
+        .status(403)
+        .json("You don't have permission to make this action ");
+    }
+    const deletedCategory = await DealsCategories.findByIdAndDelete(id);
+    if (!deletedCategory) return res.status(403).json("Category not found");
+    return res.status(200).json("Success");
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export const getAllDeals = async (req, res) => {
   try {
     const { country } = req.query;
@@ -82,6 +153,27 @@ export const getAllDealsByCat = async (req, res) => {
       return res.status(404).json({ message: "No data found" });
     }
 
+    return res.json({
+      message: "Success",
+      results: dealsItems,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getDealsItemsByCategory = async (req, res) => {
+  try {
+    const { country, category } = req.query;
+    const filterCriteria = {
+      category: category,
+      country: country,
+    };
+    const dealsItems = await DealsItems.find(filterCriteria).populate(
+      "owner",
+      "username userType"
+    );
     return res.json({
       message: "Success",
       results: dealsItems,

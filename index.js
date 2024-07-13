@@ -32,6 +32,9 @@ import realestateRoutes from "./routes/realestateRoutes.js";
 import deliveryServiceRoutes from "./routes/delivery_servicesRoutes.js";
 import orderRoutes from "./routes/order_routes.js";
 import aramexRouter from "./routes/aramexRoutes.js";
+import adminRouter from "./routes/admin_routes.js";
+import dynamicSliderRouter from "./routes/dynamic_slider_routes.js";
+
 import path from "path";
 import { fileURLToPath } from "url";
 import helmet from "helmet";
@@ -118,6 +121,8 @@ app.use(
     { name: "realestateimages", maxCount: 6 },
     { name: "carimages", maxCount: 6 },
     { name: "serviceImageList", maxCount: 6 },
+    { name: "mainSliderImg", maxCount: 16 },
+    { name: "secondSliderImg", maxCount: 16 },
   ])
 );
 
@@ -155,6 +160,8 @@ app.use("/delivery", deliveryServiceRoutes);
 // cron.schedule("0 0 * * *", deleteFinishedAds);
 app.use("/order", orderRoutes);
 app.use("/aramex", aramexRouter);
+app.use("/admin", adminRouter);
+app.use("/dynamic-sliders", dynamicSliderRouter);
 
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })

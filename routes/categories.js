@@ -35,10 +35,14 @@ import {
 import auth from "../middlewares/auth.js";
 import {
   addCompanyService,
+  addServiceCategory,
   deleteCompanyService,
+  deleteServiceCategory,
   editCompanyService,
+  editServiceCategory,
   getCompanyServices,
   getServiceById,
+  getServiceCategoryById,
   getServicesByCategories,
   getServicesCategories,
   getTotalRating,
@@ -78,6 +82,11 @@ router.get("/local-company/:id", getLocalCompanyById);
 router.get("/local-company/get-products/:id", getLocalCompanyProducts);
 router.get("/local-company/get-services/:id", getCompanyServices);
 router.get("/services-categories", getServicesCategories);
+router.post("/services-categories/add", auth, addServiceCategory);
+router.get("/services-categories/byid/:id", getServiceCategoryById);
+router.put("/services-categories/edit/:id", auth, editServiceCategory);
+router.delete("/services-categories/delete/:id", auth, deleteServiceCategory);
+
 router.get("/services-by-category", getServicesByCategories);
 router.get("/local-company/get-service/:id", getServiceById);
 router.post("/local-company/add-service", auth, addCompanyService);

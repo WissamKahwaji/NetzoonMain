@@ -91,13 +91,13 @@ export const editNews = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description } = req.body;
-
+    const adminId = process.env.ADMIN_ID;
     // Check if news with given ID exists
     const existingNews = await News.findById(id);
     if (!existingNews) {
       return res.status(404).json({ message: "News not found" });
     }
-    if (req.userId != existingNews.creator) {
+    if (req.userId != existingNews.creator && req.userId != adminId) {
       return res.status(403).json("Error in Authurization");
     }
     // Update news fields
@@ -125,13 +125,13 @@ export const editNews = async (req, res) => {
 export const deleteNews = async (req, res) => {
   try {
     const { id } = req.params;
-
+    const adminId = process.env.ADMIN_ID;
     // Check if news with given ID exists
     const existingNews = await News.findById(id);
     if (!existingNews) {
       return res.status(404).json("News not found");
     }
-    if (req.userId != existingNews.creator) {
+    if (req.userId != existingNews.creator && req.userId != adminId) {
       return res.status(403).json("Error in Authurization");
     }
     // Delete the news
