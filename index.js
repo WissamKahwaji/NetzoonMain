@@ -34,6 +34,7 @@ import orderRoutes from "./routes/order_routes.js";
 import aramexRouter from "./routes/aramexRoutes.js";
 import adminRouter from "./routes/admin_routes.js";
 import dynamicSliderRouter from "./routes/dynamic_slider_routes.js";
+import feesRouter from "./routes/fees_routes.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -162,6 +163,7 @@ app.use("/order", orderRoutes);
 app.use("/aramex", aramexRouter);
 app.use("/admin", adminRouter);
 app.use("/dynamic-sliders", dynamicSliderRouter);
+app.use("/fees", feesRouter);
 
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })

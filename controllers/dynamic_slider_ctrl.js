@@ -82,6 +82,8 @@ export const editSlider = async (req, res) => {
     const { removeMainSliderImages, removeSecondSliderImages } = req.body;
     const userId = req.userId;
     const adminId = process.env.ADMIN_ID;
+    console.log(removeMainSliderImages);
+    console.log(removeSecondSliderImages);
     if (userId !== adminId) {
       return res
         .status(403)
@@ -90,12 +92,14 @@ export const editSlider = async (req, res) => {
     const slider = await dynamicSliderModel.findById(sliderId);
     if (!slider) return res.status(404).json("Slider not found");
 
-    if (removeMainSliderImages && Array.isArray(removeMainSliderImages)) {
+    if (removeMainSliderImages) {
+      console.log("aaaaa");
       slider.mainSlider = slider.mainSlider.filter(
         image => !removeMainSliderImages.includes(image)
       );
     }
-    if (removeSecondSliderImages && Array.isArray(removeSecondSliderImages)) {
+    if (removeSecondSliderImages) {
+      console.log("bbbbb");
       slider.secondSlider = slider.secondSlider.filter(
         image => !removeSecondSliderImages.includes(image)
       );

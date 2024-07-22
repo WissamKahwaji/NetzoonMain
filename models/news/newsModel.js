@@ -1,42 +1,42 @@
 import mongoose from "mongoose";
 
-const newsSchema = mongoose.Schema({
+const newsSchema = mongoose.Schema(
+  {
     title: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     description: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     imgUrl: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
 
     creator: {
-        required: true,
+      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    country: String,
+    likes: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    },
-    likes: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            default: [],
-        },
+        default: [],
+      },
     ],
     comments: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Comment",
-            default: [],
-        },
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+        default: [],
+      },
     ],
-
-},
-    { timestamps: true }
+  },
+  { timestamps: true }
 );
 
-
-export const News = mongoose.model('News', newsSchema);
+export const News = mongoose.model("News", newsSchema);

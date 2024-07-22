@@ -187,21 +187,21 @@ export const oAuthSignIn = async (req, res) => {
       //   : null;
 
       // const coverUrlImage = coverPhoto
-      //   ? "https://www.netzoonback.siidevelopment.com/" + coverPhoto.path.replace(/\\/g, "/")
+      //   ? "https://netzoondev.siidevelopment.com/" + coverPhoto.path.replace(/\\/g, "/")
       //   : "https://i.imgur.com/EOWYmuQ.png";
 
       // const frontIdPhotoUrlImage = frontIdPhoto
-      //   ? "https://www.netzoonback.siidevelopment.com/" + frontIdPhoto.path.replace(/\\/g, "/")
+      //   ? "https://netzoondev.siidevelopment.com/" + frontIdPhoto.path.replace(/\\/g, "/")
       //   : null;
       // const backIdPhotoUrlImage = backIdPhoto
-      //   ? "https://www.netzoonback.siidevelopment.com/" + backIdPhoto.path.replace(/\\/g, "/")
+      //   ? "https://netzoondev.siidevelopment.com/" + backIdPhoto.path.replace(/\\/g, "/")
       //   : null;
       // const tradeLicensePhotoUrl = tradeLicensePhoto
-      //   ? "https://www.netzoonback.siidevelopment.com/" +
+      //   ? "https://netzoondev.siidevelopment.com/" +
       //     tradeLicensePhoto.path.replace(/\\/g, "/")
       //   : null;
       // const deliveryPermitPhotoUrl = deliveryPermitPhoto
-      //   ? "https://www.netzoonback.siidevelopment.com/" +
+      //   ? "https://netzoondev.siidevelopment.com/" +
       //     deliveryPermitPhoto.path.replace(/\\/g, "/")
       //   : null;
 
@@ -426,31 +426,31 @@ export const signUp = async (req, res) => {
     }
 
     const profileUrlImage = profilePhoto
-      ? "https://www.netzoonback.siidevelopment.com/" +
+      ? "https://netzoondev.siidevelopment.com/" +
         profilePhoto.path.replace(/\\/g, "/")
       : "https://i.imgur.com/hnIl9uM.jpg";
     const coverUrlImage = coverPhoto
-      ? "https://www.netzoonback.siidevelopment.com/" +
+      ? "https://netzoondev.siidevelopment.com/" +
         coverPhoto.path.replace(/\\/g, "/")
       : "https://i.imgur.com/EOWYmuQ.png";
     const banerUrlImage = bannerPhoto
-      ? "https://www.netzoonback.siidevelopment.com/" +
+      ? "https://netzoondev.siidevelopment.com/" +
         bannerPhoto.path.replace(/\\/g, "/")
       : null;
     const frontIdPhotoUrlImage = frontIdPhoto
-      ? "https://www.netzoonback.siidevelopment.com/" +
+      ? "https://netzoondev.siidevelopment.com/" +
         frontIdPhoto.path.replace(/\\/g, "/")
       : null;
     const backIdPhotoUrlImage = backIdPhoto
-      ? "https://www.netzoonback.siidevelopment.com/" +
+      ? "https://netzoondev.siidevelopment.com/" +
         backIdPhoto.path.replace(/\\/g, "/")
       : null;
     const tradeLicensePhotoUrl = tradeLicensePhoto
-      ? "https://www.netzoonback.siidevelopment.com/" +
+      ? "https://netzoondev.siidevelopment.com/" +
         tradeLicensePhoto.path.replace(/\\/g, "/")
       : null;
     const deliveryPermitPhotoUrl = deliveryPermitPhoto
-      ? "https://www.netzoonback.siidevelopment.com/" +
+      ? "https://netzoondev.siidevelopment.com/" +
         deliveryPermitPhoto.path.replace(/\\/g, "/")
       : null;
 
@@ -677,7 +677,7 @@ export const signUp = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const { name } = req.query;
+    const { name, country } = req.query;
 
     let users;
 
@@ -685,6 +685,11 @@ export const getAllUsers = async (req, res) => {
       // If 'name' parameter is present, perform search
       users = await userModel.find({
         username: { $regex: new RegExp(name, "i") },
+      });
+    } else if (country) {
+      // If 'name' parameter is present, perform search
+      users = await userModel.find({
+        country: country,
       });
     } else {
       // If 'name' parameter is not present, get all users
@@ -1087,38 +1092,38 @@ export const EditUser = async (req, res) => {
     if (req.files && req.files["profilePhoto"]) {
       const profilePhoto = req.files["profilePhoto"][0];
       profileUrlImage =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         profilePhoto.path.replace(/\\/g, "/");
     }
     if (req.files && req.files["coverPhoto"]) {
       const coverPhoto = req.files["coverPhoto"][0];
       coverUrlImage =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         coverPhoto.path.replace(/\\/g, "/");
     }
 
     if (req.files && req.files["frontIdPhoto"]) {
       const frontIdPhoto = req.files["frontIdPhoto"][0];
       frontIdPhotoUrlImage =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         frontIdPhoto.path.replace(/\\/g, "/");
     }
     if (req.files && req.files["backIdPhoto"]) {
       const backIdPhoto = req.files["backIdPhoto"][0];
       backIdPhotoUrlImage =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         backIdPhoto.path.replace(/\\/g, "/");
     }
     if (req.files && req.files["tradeLicensePhoto"]) {
       const tradeLicensePhoto = req.files["tradeLicensePhoto"][0];
       tradeLicensePhotoUrlImage =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         tradeLicensePhoto.path.replace(/\\/g, "/");
     }
     if (req.files && req.files["deliveryPermitPhoto"]) {
       const deliveryPermitPhoto = req.files["deliveryPermitPhoto"][0];
       deliveryPermitPhotoUrlImage =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         deliveryPermitPhoto.path.replace(/\\/g, "/");
     }
 

@@ -41,9 +41,10 @@ export const addDealsCategory = async (req, res) => {
         .status(403)
         .json("You don't have permission to make this action ");
     }
-    const { name } = req.body;
+    const { name, nameAr } = req.body;
     const newCategory = new DealsCategories({
       name,
+      nameAr,
     });
     const savedCategory = await newCategory.save();
     return res.status(201).json(savedCategory);
@@ -61,10 +62,11 @@ export const editDealsCategory = async (req, res) => {
         .status(403)
         .json("You don't have permission to make this action ");
     }
-    const { name } = req.body;
+    const { name, nameAr } = req.body;
     const category = await DealsCategories.findById(id);
     if (!category) return res.status(403).json("Category not found");
     if (name) category.name = name;
+    if (nameAr) category.nameAr = nameAr;
     const updatedCategory = await category.save();
     return res.status(200).json(updatedCategory);
   } catch (error) {
@@ -225,9 +227,8 @@ export const AddDeal = async (req, res) => {
     }
 
     const imgUrl =
-      "https://www.netzoonback.siidevelopment.com/" +
-      image.path.replace(/\\/g, "/");
-    const foundCategory = await DealsCategories.findOne({ name: category });
+      "https://netzoondev.siidevelopment.com/" + image.path.replace(/\\/g, "/");
+    const foundCategory = await DealsCategories.findOne({ _id: category });
 
     console.log(foundCategory);
 
@@ -272,6 +273,7 @@ export const AddDeal = async (req, res) => {
 export const editDeal = async (req, res) => {
   try {
     const { id } = req.params;
+    const adminId = process.env.ADMIN_ID;
     const {
       name,
       companyName,
@@ -290,7 +292,7 @@ export const editDeal = async (req, res) => {
     if (!existingDeal) {
       return res.status(404).json({ message: "Deals item not found" });
     }
-    if (req.userId != existingDeal.owner) {
+    if (req.userId != existingDeal.owner && req.userId != adminId) {
       return res.status(403).json("Error in Authurization");
     }
     existingDeal.name = name;
@@ -307,7 +309,7 @@ export const editDeal = async (req, res) => {
     if (req.files["dealImage"]) {
       const image = req.files["dealImage"][0];
       const imgUrl =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         image.path.replace(/\\/g, "/");
       existingDeal.imgUrl = imgUrl;
     }
@@ -322,13 +324,13 @@ export const editDeal = async (req, res) => {
 export const deleteDeal = async (req, res) => {
   try {
     const { id } = req.params;
-
+    const adminId = process.env.ADMIN_ID;
     // Check if deals item with the given ID exists
     const existingDeal = await DealsItems.findById(id);
     if (!existingDeal) {
       return res.status(404).json("Deals item not found");
     }
-    if (req.userId != existingDeal.owner) {
+    if (req.userId != existingDeal.owner && req.userId != adminId) {
       return res.status(403).json("Error in Authurization");
     }
     // Delete the deals item
@@ -363,6 +365,11 @@ export const savePurchDeal = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    const fee = await feesModel.findOne();
+    const dealFee = fee.dealsFees || 3;
+    let calculatePercentage;
+    calculatePercentage = (grandTotal * dealFee) / 100;
+    const sellerAmount = grandTotal - calculatePercentage;
     const purchDealsModel = new PurchDeals({
       userId: userId,
       buyerId,
@@ -370,6 +377,7 @@ export const savePurchDeal = async (req, res) => {
       grandTotal,
       shippingAddress,
       mobile,
+      sellerAmount: sellerAmount,
     });
 
     const dealItem = await DealsItems.findById(deal);
@@ -378,7 +386,7 @@ export const savePurchDeal = async (req, res) => {
     let calculateBalance;
     const netzoonBalance = user.netzoonBalance;
     calculateBalance =
-      dealItem.currentPrice - (5 * dealItem.currentPrice) / 100;
+      dealItem.currentPrice - (dealFee * dealItem.currentPrice) / 100;
     updatedBalance = netzoonBalance + calculateBalance;
 
     await userModel.findByIdAndUpdate(userId, {

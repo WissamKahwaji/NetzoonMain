@@ -16,7 +16,9 @@ export const getCompanyServices = async (req, res) => {
 
 export const getServicesCategories = async (req, res) => {
   try {
-    const categories = await serviceCategoryModel.find().select("title");
+    const categories = await serviceCategoryModel
+      .find()
+      .select("title titleAr");
     res.status(200).json(categories);
   } catch (error) {
     console.log(error);
@@ -27,7 +29,9 @@ export const getServicesCategories = async (req, res) => {
 export const getServiceCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
-    const category = await serviceCategoryModel.findById(id).select("title");
+    const category = await serviceCategoryModel
+      .findById(id)
+      .select("title titleAr");
     res.status(200).json(category);
   } catch (error) {
     console.log(error);
@@ -37,7 +41,7 @@ export const getServiceCategoryById = async (req, res) => {
 
 export const addServiceCategory = async (req, res) => {
   try {
-    const { title } = req.body;
+    const { title, titleAr } = req.body;
     const userId = req.userId;
     const adminId = process.env.ADMIN_ID;
     if (userId !== adminId) {
@@ -47,6 +51,7 @@ export const addServiceCategory = async (req, res) => {
     }
     const newCategory = new serviceCategoryModel({
       title,
+      titleAr,
     });
     const savedCategory = await newCategory.save();
     res.status(201).json(savedCategory);
@@ -60,7 +65,7 @@ export const editServiceCategory = async (req, res) => {
   try {
     console.log("asd");
     const { id } = req.params;
-    const { title } = req.body;
+    const { title, titleAr } = req.body;
     const userId = req.userId;
     const adminId = process.env.ADMIN_ID;
     if (userId !== adminId) {
@@ -71,6 +76,7 @@ export const editServiceCategory = async (req, res) => {
     const serviceCategory = await serviceCategoryModel.findById(id);
     if (!serviceCategory) return res.status(403).json("category not found");
     if (title) serviceCategory.title = title;
+    if (titleAr) serviceCategory.titleAr = titleAr;
     const updatedServiceCategory = await serviceCategory.save();
     return res.status(201).json(updatedServiceCategory);
   } catch (error) {
@@ -146,7 +152,7 @@ export const addCompanyService = async (req, res) => {
     const image = req.files["image"] ? req.files["image"][0] : null;
 
     const imageUrl = image
-      ? "https://www.netzoonback.siidevelopment.com/" +
+      ? "https://netzoondev.siidevelopment.com/" +
         image.path.replace(/\\/g, "/")
       : null;
 
@@ -183,7 +189,7 @@ export const addCompanyService = async (req, res) => {
         }
 
         const imageUrl =
-          "https://www.netzoonback.siidevelopment.com/" +
+          "https://netzoondev.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
         newService.serviceImageList = imageUrls;
@@ -192,7 +198,7 @@ export const addCompanyService = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       newService.vedioUrl = urlVideo;
     }
@@ -240,7 +246,7 @@ export const editCompanyService = async (req, res) => {
     if (req.files["image"]) {
       const image = req.files["image"][0];
       const urlImage =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         image.path.replace(/\\/g, "/");
       existingService.imageUrl = urlImage;
     }
@@ -260,7 +266,7 @@ export const editCompanyService = async (req, res) => {
         }
 
         const imageUrl =
-          "https://www.netzoonback.siidevelopment.com/" +
+          "https://netzoondev.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
         existingService.serviceImageList = imageUrls;
@@ -269,7 +275,7 @@ export const editCompanyService = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       existingService.vedioUrl = urlVideo;
     }

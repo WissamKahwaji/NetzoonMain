@@ -18,7 +18,11 @@ import { News } from "../models/news/newsModel.js";
 // }
 export const getAllNews = async (req, res) => {
   try {
-    const data = await News.find({})
+    const { country } = req.query;
+    const filterCriteria = {
+      country: country,
+    };
+    const data = await News.find(filterCriteria)
       .populate("creator", "_id username profilePhoto")
       .populate({
         path: "comments",
@@ -59,8 +63,15 @@ export const getNewsById = async (req, res) => {
 
 export const createNews = async (req, res) => {
   try {
-    const { title, description, imgUrl, ownerName, ownerImage, creator } =
-      req.body;
+    const {
+      title,
+      description,
+      imgUrl,
+      ownerName,
+      ownerImage,
+      creator,
+      country,
+    } = req.body;
     const image = req.files["image"][0];
     if (!image) {
       return res
@@ -68,8 +79,7 @@ export const createNews = async (req, res) => {
         .json({ message: "Attached file is not an image." });
     }
     const urlImage =
-      "https://www.netzoonback.siidevelopment.com/" +
-      image.path.replace(/\\/g, "/");
+      "https://netzoondev.siidevelopment.com/" + image.path.replace(/\\/g, "/");
 
     const news = new News({
       title,
@@ -78,6 +88,7 @@ export const createNews = async (req, res) => {
       ownerName,
       ownerImage,
       creator,
+      country,
     });
     const savedNews = await news.save();
     // console.log(savedNews);
@@ -108,7 +119,7 @@ export const editNews = async (req, res) => {
     if (req.files["image"]) {
       const image = req.files["image"][0];
       const urlImage =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         image.path.replace(/\\/g, "/");
       existingNews.imgUrl = urlImage;
     }

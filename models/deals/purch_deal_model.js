@@ -26,6 +26,7 @@ const purchDealsSchema = mongoose.Schema(
     mobile: {
       type: String,
     },
+    sellerAmount: Number,
   },
   {
     timestamps: true,

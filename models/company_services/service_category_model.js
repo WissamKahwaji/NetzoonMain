@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const serviceCategorySchema = new mongoose.Schema({
   title: String,
+  titleAr: String,
   services: [
     {
       type: mongoose.Schema.Types.ObjectId,

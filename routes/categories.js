@@ -31,6 +31,7 @@ import {
   editVehicle,
   deleteVehicle,
   resetVehicleCount,
+  getAllShips,
 } from "../controllers/categories.js";
 import auth from "../middlewares/auth.js";
 import {
@@ -103,6 +104,8 @@ router.get("/govermental/:id", getGovermentalById);
 router.get("/cars", getAllCars);
 router.get("/cars-companies", getCarsCompanies);
 router.get("/latest-cars-by-creator", getLatestCarsByCreator);
+
+router.get("/ships", getAllShips);
 
 //Plans routes
 router.get("/planes", getAllPlans);

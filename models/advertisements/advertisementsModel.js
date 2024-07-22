@@ -33,7 +33,8 @@ const advertisementSchema = mongoose.Schema(
     color: String,
     guarantee: Boolean,
     contactNumber: String,
-
+    country: String,
+    cost: Number,
     advertisingViews: {
       type: Number,
     },

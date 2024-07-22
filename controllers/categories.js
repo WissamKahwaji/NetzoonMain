@@ -262,6 +262,7 @@ export const getAllFactories = async (req, res) => {
     if (country) {
       data = await FactoryCategories.findById(id, {
         factory: 1,
+        title: 1,
         _id: 0,
       }).populate({
         path: "factory",
@@ -270,6 +271,7 @@ export const getAllFactories = async (req, res) => {
     } else {
       data = await FactoryCategories.findById(id, {
         factory: 1,
+        title: 1,
         _id: 0,
       }).populate({
         path: "factory",
@@ -445,6 +447,50 @@ export const getLatestCarsByCreator = async (req, res) => {
     res.json({
       message: "success",
       results: populatedLatestCars,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAllShips = async (req, res) => {
+  const { country, creator, priceMin, priceMax, type } = req.query;
+  try {
+    const filters = {
+      category: "sea_companies",
+      country: country,
+    };
+    if (creator) {
+      const ownerId = await userModel.findOne({ username: creator });
+
+      if (ownerId) {
+        filters.creator = new mongoose.Types.ObjectId(ownerId._id);
+      }
+    }
+    if (type) {
+      filters.type = type;
+    }
+    if (priceMin !== undefined && priceMax !== undefined) {
+      filters.price = {
+        $gte: parseFloat(priceMin),
+        $lte: parseFloat(priceMax),
+      };
+    } else if (priceMin !== undefined) {
+      filters.price = {
+        $gte: parseFloat(priceMin),
+      };
+    } else if (priceMax !== undefined) {
+      filters.price = {
+        $lte: parseFloat(priceMax),
+      };
+    }
+    const cars = await Vehicle.find(filters).populate(
+      "creator",
+      "username firstMobile profilePhoto"
+    );
+    res.json({
+      message: "success",
+      results: cars,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -630,8 +676,7 @@ export const createVehicle = async (req, res) => {
         .json({ message: "Attached file is not an image." });
     }
     const urlImage =
-      "https://www.netzoonback.siidevelopment.com/" +
-      image.path.replace(/\\/g, "/");
+      "https://netzoondev.siidevelopment.com/" + image.path.replace(/\\/g, "/");
     const newVehicle = new Vehicle({
       name,
       imageUrl: urlImage,
@@ -688,7 +733,7 @@ export const createVehicle = async (req, res) => {
         }
 
         const imageUrl =
-          "https://www.netzoonback.siidevelopment.com/" +
+          "https://netzoondev.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
         newVehicle.carImages = imageUrls;
@@ -698,7 +743,7 @@ export const createVehicle = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       newVehicle.vedioUrl = urlVideo;
     }
@@ -794,7 +839,7 @@ export const resetVehicleCount = async (req, res) => {
 
 //         if (req.files['image']) {
 //             const image = req.files['image'][0];
-//             const urlImage = 'https://www.netzoonback.siidevelopment.com/' + image.path.replace(/\\/g, '/');
+//             const urlImage = 'https://netzoondev.siidevelopment.com/' + image.path.replace(/\\/g, '/');
 //             vehicle.imageUrl = urlImage;
 //         }
 
@@ -810,14 +855,14 @@ export const resetVehicleCount = async (req, res) => {
 //                     return res.status(404).json({ message: 'Attached file is not an image.' });
 //                 }
 
-//                 const imageUrl = 'https://www.netzoonback.siidevelopment.com/' + image.path.replace(/\\/g, '/');
+//                 const imageUrl = 'https://netzoondev.siidevelopment.com/' + image.path.replace(/\\/g, '/');
 //                 imageUrls.push(imageUrl);
 //                 vehicle.carImages = imageUrls;
 //             }
 //         }
 //         if (req.files['video']) {
 //             const video = req.files['video'][0];
-//             const urlVideo = 'https://www.netzoonback.siidevelopment.com/' + video.path.replace(/\\/g, '/');
+//             const urlVideo = 'https://netzoondev.siidevelopment.com/' + video.path.replace(/\\/g, '/');
 //             vehicle.vedioUrl = urlVideo;
 //         }
 //         await vehicle.save();
@@ -846,7 +891,7 @@ export const editVehicle = async (req, res) => {
     if (req.files["image"]) {
       const image = req.files["image"][0];
       const urlImage =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         image.path.replace(/\\/g, "/");
       vehicle.imageUrl = urlImage;
     }
@@ -868,7 +913,7 @@ export const editVehicle = async (req, res) => {
         }
 
         const imageUrl =
-          "https://www.netzoonback.siidevelopment.com/" +
+          "https://netzoondev.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
         vehicle.carImages = imageUrls;
@@ -877,7 +922,7 @@ export const editVehicle = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       vehicle.vedioUrl = urlVideo;
     }

@@ -316,8 +316,7 @@ export const addProduct = async (req, res) => {
     }
 
     const urlImage =
-      "https://www.netzoonback.siidevelopment.com/" +
-      image.path.replace(/\\/g, "/");
+      "https://netzoondev.siidevelopment.com/" + image.path.replace(/\\/g, "/");
 
     // Find department by name
     const department = await Departments.findOne({ name: departmentName });
@@ -381,7 +380,7 @@ export const addProduct = async (req, res) => {
         }
 
         const imageUrl =
-          "https://www.netzoonback.siidevelopment.com/" +
+          "https://netzoondev.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
         productData.images = imageUrls;
@@ -392,7 +391,7 @@ export const addProduct = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       productData.vedioUrl = urlVideo;
     }
@@ -400,8 +399,7 @@ export const addProduct = async (req, res) => {
     if (req.files["gif"]) {
       const gif = req.files["gif"][0];
       const gifUrl =
-        "https://www.netzoonback.siidevelopment.com/" +
-        gif.path.replace(/\\/g, "/");
+        "https://netzoondev.siidevelopment.com/" + gif.path.replace(/\\/g, "/");
       productData.gifUrl = gifUrl;
     }
 
@@ -455,7 +453,7 @@ export const editProduct = async (req, res) => {
     if (req.files && req.files["image"]) {
       const profilePhoto = req.files["image"][0];
       urlImage =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         profilePhoto.path.replace(/\\/g, "/");
     }
     // const image = req.files['image'][0];
@@ -463,7 +461,7 @@ export const editProduct = async (req, res) => {
     //     return res.status(404).json({ message: 'Attached file is not an image.' });
     // }
 
-    // const urlImage = 'https://www.netzoonback.siidevelopment.com/' + image.path.replace(/\\/g, '/');
+    // const urlImage = 'https://netzoondev.siidevelopment.com/' + image.path.replace(/\\/g, '/');
     let updatedProduct;
     if (req.files && req.files["image"]) {
       updatedProduct = await Product.findByIdAndUpdate(
@@ -517,7 +515,7 @@ export const editProduct = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       updatedProduct.vedioUrl = urlVideo;
     }
@@ -525,8 +523,7 @@ export const editProduct = async (req, res) => {
     if (req.files["gif"]) {
       const gif = req.files["gif"][0];
       const gifUrl =
-        "https://www.netzoonback.siidevelopment.com/" +
-        gif.path.replace(/\\/g, "/");
+        "https://netzoondev.siidevelopment.com/" + gif.path.replace(/\\/g, "/");
       updatedProduct.gifUrl = gifUrl;
     }
 
@@ -677,7 +674,7 @@ export const getCategoryById = async (req, res) => {
 export const addCategory = async (req, res) => {
   try {
     const { departmentId } = req.params;
-    const { name } = req.body;
+    const { name, nameAr } = req.body;
     const userId = req.userId;
     const adminId = process.env.ADMIN_ID;
     if (userId !== adminId) {
@@ -694,6 +691,7 @@ export const addCategory = async (req, res) => {
       : null;
     const newCategory = new DepartmentsCategory({
       name,
+      nameAr,
       department: department._id,
       imageUrl: img,
     });
@@ -711,7 +709,7 @@ export const editCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
 
-    const { name } = req.body;
+    const { name, nameAr } = req.body;
     const userId = req.userId;
     const adminId = process.env.ADMIN_ID;
     if (userId !== adminId) {
@@ -723,6 +721,7 @@ export const editCategory = async (req, res) => {
     const category = await DepartmentsCategory.findById(categoryId);
     if (!category) return res.status(404).json("category not found");
     if (name) category.name = name;
+    if (nameAr) category.nameAr = nameAr;
     if (req.files && req.files["image"]) {
       const imgPath = req.files["image"][0].path;
       category.imageUrl = `${process.env.BASE_URL}/${imgPath.replace(
@@ -767,7 +766,11 @@ export const deleteCategory = async (req, res) => {
 export const getProductByCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
-    const products = await Product.find({ category: categoryId });
+    const { country } = req.query;
+    const products = await Product.find({
+      category: categoryId,
+      country: country,
+    });
     return res.status(200).json(products);
   } catch (error) {
     return res.status(500).json({ message: error.message });

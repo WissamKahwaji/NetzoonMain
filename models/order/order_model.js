@@ -1,66 +1,71 @@
 import mongoose from "mongoose";
 
-
-const orderSchema = mongoose.Schema({
+const orderSchema = mongoose.Schema(
+  {
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     clientId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     products: [
-        {
-            product: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Products",
-                required: true,
-            },
-            amount: {
-                type: Number,
-                required: true,
-            },
-            qty: {
-                type: Number,
-                required: true,
-            },
-        }
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Products",
+          required: true,
+        },
+        amount: {
+          type: Number,
+          required: true,
+        },
+        qty: {
+          type: Number,
+          required: true,
+        },
+      },
     ],
     grandTotal: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     orderStatus: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     transactionId: {
-        type: String,
+      type: String,
     },
+    pickupId: {
+      type: String,
+    },
+
     orderEvent: {
-        type: String,
+      type: String,
     },
     shippingAddress: {
-        type: String,
+      type: String,
     },
     mobile: {
-        type: String,
+      type: String,
     },
     subTotal: {
-        type: Number,
+      type: Number,
     },
     serviceFee: {
-        type: Number,
+      type: Number,
     },
-},
-    {
-        timestamps: true,
-    }
+    percentageFromSeller: {
+      type: Number,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
-
-
-export const Order = mongoose.model('Orders', orderSchema);
+export const Order = mongoose.model("Orders", orderSchema);

@@ -74,8 +74,7 @@ export const addRealEstate = async (req, res) => {
         .json({ message: "Attached file is not an image." });
     }
     const urlImage =
-      "https://www.netzoonback.siidevelopment.com/" +
-      image.path.replace(/\\/g, "/");
+      "https://netzoondev.siidevelopment.com/" + image.path.replace(/\\/g, "/");
 
     const newRealEstate = new RealEstate({
       title,
@@ -112,7 +111,7 @@ export const addRealEstate = async (req, res) => {
         }
 
         const imageUrl =
-          "https://www.netzoonback.siidevelopment.com/" +
+          "https://netzoondev.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
         newRealEstate.images = imageUrls;
@@ -172,7 +171,7 @@ export const editRealEstate = async (req, res) => {
           .json({ message: "Attached file is not an image." });
       }
       const urlImage =
-        "https://www.netzoonback.siidevelopment.com/" +
+        "https://netzoondev.siidevelopment.com/" +
         image.path.replace(/\\/g, "/");
       updatedData.imageUrl = urlImage;
     }
@@ -195,7 +194,7 @@ export const editRealEstate = async (req, res) => {
         }
 
         const imageUrl =
-          "https://www.netzoonback.siidevelopment.com/" +
+          "https://netzoondev.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
       }

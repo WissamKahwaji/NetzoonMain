@@ -1,3 +1,4 @@
+import { feesModel } from "../models/fees/fees_model.js";
 import { ClientOrders } from "../models/order/client_order_model.js";
 import { Order } from "../models/order/order_model.js";
 import { Product } from "../models/product/product.js";
@@ -118,7 +119,19 @@ export const saveOrder = async (req, res) => {
       subTotal: subTotal,
       serviceFee: serviceFee,
     });
-
+    const fee = await feesModel.findOne();
+    const sellerfee = fee.feesFromSeller || 3;
+    let calculatePercentage;
+    if (
+      client.userType == "trader" ||
+      client.userType == "factory" ||
+      client.userType == "local_company"
+    ) {
+      calculatePercentage = (subTotal * sellerfee) / 100;
+    } else {
+      calculatePercentage = 0;
+    }
+    orderModel.percentageFromSeller = calculatePercentage;
     const savedOrder = await orderModel.save();
 
     const populatedOrder = await Order.findById(savedOrder._id)
@@ -141,7 +154,7 @@ export const saveOrder = async (req, res) => {
       client.userType == "factory" ||
       client.userType == "local_company"
     ) {
-      calculateBalance = subTotal - (subTotal * 3) / 100;
+      calculateBalance = subTotal - (subTotal * sellerfee) / 100;
       updatedBalance = netzoonBalance + calculateBalance;
     } else {
       updatedBalance = netzoonBalance + subTotal;
@@ -150,7 +163,7 @@ export const saveOrder = async (req, res) => {
     await userModel.findByIdAndUpdate(clientId, {
       netzoonBalance: updatedBalance,
     });
-    return res.status(200).json("Order updated successfully");
+    return res.status(200).json(savedOrder._id);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
@@ -212,8 +225,47 @@ export const getOrderById = async (req, res) => {
           { path: "owner", select: "username userType" },
         ],
       })
-      .populate("userId", "username");
+      .populate("userId", "username")
+      .populate("clientId", "username");
     res.status(200).json(order);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getAllOrders = async (req, res) => {
+  try {
+    const order = await Order.find()
+      .populate({
+        path: "products.product",
+        populate: [
+          { path: "category", select: "name" },
+          { path: "owner", select: "username userType" },
+        ],
+      })
+      .populate("userId", "username")
+      .populate("clientId", "username");
+    res.status(200).json(order);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const editOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { orderStatus } = req.body;
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json("Order not found");
+    }
+    if (orderStatus) {
+      order.orderStatus = orderStatus;
+    }
+    await order.save();
+    return res.status(200).json(order);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
@@ -231,6 +283,25 @@ export const deleteOrder = async (req, res) => {
     res.json("Order deleted successfully");
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updatePickupId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { pickupId } = req.body;
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json("Order not found");
+    }
+    if (pickupId) {
+      order.pickupId = pickupId;
+    }
+    await order.save();
+    return res.status(200).json("success");
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -91,8 +91,7 @@ export const addTender = async (req, res) => {
     }
 
     const imgUrl =
-      "https://www.netzoonback.siidevelopment.com/" +
-      image.path.replace(/\\/g, "/");
+      "https://netzoondev.siidevelopment.com/" + image.path.replace(/\\/g, "/");
     const foundCategory = await TendersCategories.findOne({ name: category });
     if (!foundCategory) {
       return res.status(404).json({ message: "Category not found" });

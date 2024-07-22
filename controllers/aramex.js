@@ -11,6 +11,9 @@ const shipmentUrl =
 const fetchCitiesUrl =
   "https://ws.aramex.net/ShippingAPI.V2/Location/Service_1_0.svc/json/FetchCities";
 
+const trachPickupUrl =
+  "https://ws.sbx.aramex.net/ShippingAPI.V2/Tracking/Service_1_0.svc/json/TrackPickup";
+
 export const calculateRateController = async (req, res) => {
   try {
     const requestBody = req.body;
@@ -90,6 +93,38 @@ export const fetchCities = async (req, res) => {
     res.json(response.data);
   } catch (error) {
     // Handle errors
+    console.error("Error:", error.message);
+    res.status(500).json({ error: error });
+  }
+};
+
+export const trackPickUp = async (req, res) => {
+  try {
+    const { pickupId } = req.query;
+    const requestBody = {
+      ClientInfo: {
+        Source: 24,
+        AccountCountryCode: "AE",
+        AccountEntity: "DXB",
+        AccountPin: "116216",
+        AccountNumber: "45796",
+        UserName: "testingapi@aramex.com",
+        Password: "R123456789$r",
+        Version: "v1",
+      },
+      Reference: pickupId,
+      Transaction: {
+        Reference1: "",
+        Reference2: "",
+        Reference3: "",
+        Reference4: "",
+        Reference5: "",
+      },
+    };
+    const response = await axios.post(trachPickupUrl, requestBody);
+
+    res.json(response.data);
+  } catch (error) {
     console.error("Error:", error.message);
     res.status(500).json({ error: error });
   }
