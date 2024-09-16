@@ -3,6 +3,7 @@ import { DealsCategories } from "../models/deals/dealsCategoriesModel.js";
 import { DealsItems } from "../models/deals/dealsItemsModel.js";
 import { PurchDeals } from "../models/deals/purch_deal_model.js";
 import userModel from "../models/userModel.js";
+import { feesModel } from "../models/fees/fees_model.js";
 
 export const getAllDealsCategories = async (req, res) => {
   try {
@@ -227,7 +228,8 @@ export const AddDeal = async (req, res) => {
     }
 
     const imgUrl =
-      "https://netzoondev.siidevelopment.com/" + image.path.replace(/\\/g, "/");
+      "https://www.netzoonback.siidevelopment.com/" +
+      image.path.replace(/\\/g, "/");
     const foundCategory = await DealsCategories.findOne({ _id: category });
 
     console.log(foundCategory);
@@ -309,7 +311,7 @@ export const editDeal = async (req, res) => {
     if (req.files["dealImage"]) {
       const image = req.files["dealImage"][0];
       const imgUrl =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         image.path.replace(/\\/g, "/");
       existingDeal.imgUrl = imgUrl;
     }

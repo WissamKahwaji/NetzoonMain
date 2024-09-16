@@ -182,7 +182,7 @@ export const createAds = async (req, res) => {
           .json({ message: "Attached file is not an image." });
       }
       urlImage =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         image.path.replace(/\\/g, "/");
     }
 
@@ -227,7 +227,7 @@ export const createAds = async (req, res) => {
         }
 
         const imageUrl =
-          "https://netzoondev.siidevelopment.com/" +
+          "https://www.netzoonback.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
         newAds.advertisingImageList = imageUrls;
@@ -236,7 +236,7 @@ export const createAds = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       newAds.advertisingVedio = urlVideo;
     }
@@ -297,7 +297,7 @@ export const editAdvertisement = async (req, res) => {
     if (req.files["image"]) {
       const image = req.files["image"][0];
       const urlImage =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         image.path.replace(/\\/g, "/");
       existingAd.advertisingImage = urlImage;
     }
@@ -319,7 +319,7 @@ export const editAdvertisement = async (req, res) => {
         }
 
         const imageUrl =
-          "https://netzoondev.siidevelopment.com/" +
+          "https://www.netzoonback.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
       }
@@ -329,7 +329,7 @@ export const editAdvertisement = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       existingAd.advertisingVedio = urlVideo;
     }

@@ -39,6 +39,9 @@ import feesRouter from "./routes/fees_routes.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import helmet from "helmet";
+import session from "express-session";
+import passport from "./services/passport.js";
+
 // import stripeAccount from './services/stripe_service.js';
 
 // import { resetCounts } from './scheduled-tasks/resetCounts.js';
@@ -87,6 +90,17 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use(helmet());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET, // Replace with your secret key
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(
   cors({

@@ -20,6 +20,7 @@ import { Comment } from "../models/news/comment_model.js";
 import { DealsItems } from "../models/deals/dealsItemsModel.js";
 import { DealsCategories } from "../models/deals/dealsCategoriesModel.js";
 import nodemailer from "nodemailer";
+import path from "path";
 // import passport from "passport";
 // var GoogleStrategy = require("passport-google-oauth2").Strategy;
 
@@ -187,21 +188,21 @@ export const oAuthSignIn = async (req, res) => {
       //   : null;
 
       // const coverUrlImage = coverPhoto
-      //   ? "https://netzoondev.siidevelopment.com/" + coverPhoto.path.replace(/\\/g, "/")
+      //   ? "https://www.netzoonback.siidevelopment.com/" + coverPhoto.path.replace(/\\/g, "/")
       //   : "https://i.imgur.com/EOWYmuQ.png";
 
       // const frontIdPhotoUrlImage = frontIdPhoto
-      //   ? "https://netzoondev.siidevelopment.com/" + frontIdPhoto.path.replace(/\\/g, "/")
+      //   ? "https://www.netzoonback.siidevelopment.com/" + frontIdPhoto.path.replace(/\\/g, "/")
       //   : null;
       // const backIdPhotoUrlImage = backIdPhoto
-      //   ? "https://netzoondev.siidevelopment.com/" + backIdPhoto.path.replace(/\\/g, "/")
+      //   ? "https://www.netzoonback.siidevelopment.com/" + backIdPhoto.path.replace(/\\/g, "/")
       //   : null;
       // const tradeLicensePhotoUrl = tradeLicensePhoto
-      //   ? "https://netzoondev.siidevelopment.com/" +
+      //   ? "https://www.netzoonback.siidevelopment.com/" +
       //     tradeLicensePhoto.path.replace(/\\/g, "/")
       //   : null;
       // const deliveryPermitPhotoUrl = deliveryPermitPhoto
-      //   ? "https://netzoondev.siidevelopment.com/" +
+      //   ? "https://www.netzoonback.siidevelopment.com/" +
       //     deliveryPermitPhoto.path.replace(/\\/g, "/")
       //   : null;
 
@@ -426,31 +427,31 @@ export const signUp = async (req, res) => {
     }
 
     const profileUrlImage = profilePhoto
-      ? "https://netzoondev.siidevelopment.com/" +
+      ? "https://www.netzoonback.siidevelopment.com/" +
         profilePhoto.path.replace(/\\/g, "/")
       : "https://i.imgur.com/hnIl9uM.jpg";
     const coverUrlImage = coverPhoto
-      ? "https://netzoondev.siidevelopment.com/" +
+      ? "https://www.netzoonback.siidevelopment.com/" +
         coverPhoto.path.replace(/\\/g, "/")
       : "https://i.imgur.com/EOWYmuQ.png";
     const banerUrlImage = bannerPhoto
-      ? "https://netzoondev.siidevelopment.com/" +
+      ? "https://www.netzoonback.siidevelopment.com/" +
         bannerPhoto.path.replace(/\\/g, "/")
       : null;
     const frontIdPhotoUrlImage = frontIdPhoto
-      ? "https://netzoondev.siidevelopment.com/" +
+      ? "https://www.netzoonback.siidevelopment.com/" +
         frontIdPhoto.path.replace(/\\/g, "/")
       : null;
     const backIdPhotoUrlImage = backIdPhoto
-      ? "https://netzoondev.siidevelopment.com/" +
+      ? "https://www.netzoonback.siidevelopment.com/" +
         backIdPhoto.path.replace(/\\/g, "/")
       : null;
     const tradeLicensePhotoUrl = tradeLicensePhoto
-      ? "https://netzoondev.siidevelopment.com/" +
+      ? "https://www.netzoonback.siidevelopment.com/" +
         tradeLicensePhoto.path.replace(/\\/g, "/")
       : null;
     const deliveryPermitPhotoUrl = deliveryPermitPhoto
-      ? "https://netzoondev.siidevelopment.com/" +
+      ? "https://www.netzoonback.siidevelopment.com/" +
         deliveryPermitPhoto.path.replace(/\\/g, "/")
       : null;
 
@@ -869,29 +870,28 @@ export const addProductToFavorites = async (req, res) => {
   const { userId, productId } = req.body;
 
   try {
-    console.error("11111111");
     // Find the user by userId
     if (req.userId != userId) {
       return res.status(403).json("Error in Authurization");
     }
     const user = await userModel.findById(userId);
-    console.error("22222222");
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    console.error("3333333333");
+
     // Check if the product already exists in the favorites list
     const isProductInFavorites = user.favorites.products.find(
       item => item.productId.toString() === productId
     );
-    console.error("4444444444");
+
     if (isProductInFavorites) {
       return res.status(400).json({ message: "Product already in favorites" });
     }
-    console.error("5555555555");
+
     // Add the product to the favorites list
     user.favorites.products.push({ productId });
-    console.error("6666666666");
+
     // Save the updated user
     await user.save();
 
@@ -935,7 +935,7 @@ export const removeProductFromFavorites = async (req, res) => {
 
     res.status(200).json("Product removed from favorites");
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1068,8 +1068,9 @@ export const EditUser = async (req, res) => {
     contactName,
     floorNum,
     locationType,
+    country,
   } = req.body;
-  console.log(req.body);
+
   let profileUrlImage;
   let coverUrlImage;
   let frontIdPhotoUrlImage;
@@ -1087,48 +1088,54 @@ export const EditUser = async (req, res) => {
     if (req.userId != userId && req.userId !== adminId) {
       return res.status(403).json("Error in Authurization");
     }
-
+    console.log(req.files["profilePhoto"]);
     // Check if a profile photo is included in the request
     if (req.files && req.files["profilePhoto"]) {
       const profilePhoto = req.files["profilePhoto"][0];
       profileUrlImage =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         profilePhoto.path.replace(/\\/g, "/");
     }
     if (req.files && req.files["coverPhoto"]) {
       const coverPhoto = req.files["coverPhoto"][0];
       coverUrlImage =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         coverPhoto.path.replace(/\\/g, "/");
     }
 
     if (req.files && req.files["frontIdPhoto"]) {
       const frontIdPhoto = req.files["frontIdPhoto"][0];
       frontIdPhotoUrlImage =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         frontIdPhoto.path.replace(/\\/g, "/");
     }
     if (req.files && req.files["backIdPhoto"]) {
       const backIdPhoto = req.files["backIdPhoto"][0];
       backIdPhotoUrlImage =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         backIdPhoto.path.replace(/\\/g, "/");
     }
     if (req.files && req.files["tradeLicensePhoto"]) {
       const tradeLicensePhoto = req.files["tradeLicensePhoto"][0];
       tradeLicensePhotoUrlImage =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         tradeLicensePhoto.path.replace(/\\/g, "/");
     }
     if (req.files && req.files["deliveryPermitPhoto"]) {
       const deliveryPermitPhoto = req.files["deliveryPermitPhoto"][0];
       deliveryPermitPhotoUrlImage =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         deliveryPermitPhoto.path.replace(/\\/g, "/");
     }
 
     if (username) user.username = username;
     if (email) user.email = email;
+    if (country) {
+      user.country = country;
+    } else {
+      user.country = "AE";
+    }
+
     user.firstMobile = firstMobile;
     user.secondeMobile = secondeMobile;
     user.thirdMobile = thirdMobile;
@@ -1234,8 +1241,7 @@ export const addProductsToSelectedProducts = async (req, res) => {
     const productIdsArray = Array.isArray(productIds)
       ? productIds
       : [productIds];
-    console.log("----------------------------------------------------");
-    console.log(productIdsArray);
+
     // let newProductIds;
     // if (productIds.length > 0) {
     //     newProductIds = productIds.filter(productId => !user.selectedProducts.includes(productId));
@@ -1246,8 +1252,7 @@ export const addProductsToSelectedProducts = async (req, res) => {
       productId => !user.selectedProducts.includes(productId)
     );
     user.selectedProducts.push(...newProductIds);
-    console.log("--------------------------------");
-    console.log(newProductIds);
+
     await user.save();
 
     res.json({ message: "Products added to selectedProducts" });
@@ -1364,7 +1369,9 @@ export const rateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { rating, userId } = req.body;
-
+    console.log(id);
+    console.log(rating);
+    console.log(userId);
     const existingUser = await userModel.findById(id);
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
@@ -1374,7 +1381,9 @@ export const rateUser = async (req, res) => {
       rate.user.equals(userId)
     );
     if (alreadyRated) {
-      return res.status(400).json("You have already rated this User");
+      return res
+        .status(400)
+        .json({ message: "You have already rated this User" });
     }
 
     // Validate the rating value (assumed to be between 1 and 5)
@@ -1593,7 +1602,7 @@ export const forgetPassword = async (req, res) => {
       },
     });
     const resetLink = `https://www.netzoon.com/reset-password/${resetToken}`;
-
+    console.log(resetLink);
     const mailOptions = {
       from: "info@netzoon.com",
       to: email,
@@ -1639,6 +1648,74 @@ export const resetPassword = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const search = async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).json({ error: "Query parameter is required" });
+  }
+
+  try {
+    // Search for users
+    const users = await userModel
+      .find({
+        $or: [{ username: new RegExp(query, "i") }],
+      })
+      .exec();
+
+    // Search for products
+    const products = await Product.find({
+      $or: [{ name: new RegExp(query, "i") }],
+    })
+      .populate({
+        path: "owner",
+        select: ["_id", "username", "userType"],
+      })
+      .populate({
+        path: "category",
+        select: "name department",
+        populate: {
+          path: "department",
+          select: "_id",
+        },
+      })
+      .exec();
+
+    const advertisments = await Advertisement.find({
+      $or: [{ advertisingTitle: new RegExp(query, "i") }],
+    }).populate({
+      path: "owner",
+      select: ["_id", "username", "userType"],
+    });
+
+    const vehicles = await Vehicle.find({
+      $or: [{ name: new RegExp(query, "i") }],
+    }).populate({
+      path: "creator",
+      select: ["_id", "username", "userType"],
+    });
+
+    const realEstates = await RealEstate.find({
+      $or: [{ title: new RegExp(query, "i") }],
+    }).populate({
+      path: "createdBy",
+      select: ["_id", "username", "userType"],
+    });
+
+    return res.json({
+      users,
+      products,
+      advertisments,
+      vehicles,
+      realEstates,
+      query,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 

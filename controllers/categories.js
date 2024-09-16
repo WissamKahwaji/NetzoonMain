@@ -645,6 +645,7 @@ export const createVehicle = async (req, res) => {
       shipLength,
     } = req.body;
 
+    console.log(creator);
     const user = await userModel.findById(creator);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -676,7 +677,8 @@ export const createVehicle = async (req, res) => {
         .json({ message: "Attached file is not an image." });
     }
     const urlImage =
-      "https://netzoondev.siidevelopment.com/" + image.path.replace(/\\/g, "/");
+      "https://www.netzoonback.siidevelopment.com/" +
+      image.path.replace(/\\/g, "/");
     const newVehicle = new Vehicle({
       name,
       imageUrl: urlImage,
@@ -733,7 +735,7 @@ export const createVehicle = async (req, res) => {
         }
 
         const imageUrl =
-          "https://netzoondev.siidevelopment.com/" +
+          "https://www.netzoonback.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
         newVehicle.carImages = imageUrls;
@@ -743,7 +745,7 @@ export const createVehicle = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       newVehicle.vedioUrl = urlVideo;
     }
@@ -839,7 +841,7 @@ export const resetVehicleCount = async (req, res) => {
 
 //         if (req.files['image']) {
 //             const image = req.files['image'][0];
-//             const urlImage = 'https://netzoondev.siidevelopment.com/' + image.path.replace(/\\/g, '/');
+//             const urlImage = 'https://www.netzoonback.siidevelopment.com/' + image.path.replace(/\\/g, '/');
 //             vehicle.imageUrl = urlImage;
 //         }
 
@@ -855,14 +857,14 @@ export const resetVehicleCount = async (req, res) => {
 //                     return res.status(404).json({ message: 'Attached file is not an image.' });
 //                 }
 
-//                 const imageUrl = 'https://netzoondev.siidevelopment.com/' + image.path.replace(/\\/g, '/');
+//                 const imageUrl = 'https://www.netzoonback.siidevelopment.com/' + image.path.replace(/\\/g, '/');
 //                 imageUrls.push(imageUrl);
 //                 vehicle.carImages = imageUrls;
 //             }
 //         }
 //         if (req.files['video']) {
 //             const video = req.files['video'][0];
-//             const urlVideo = 'https://netzoondev.siidevelopment.com/' + video.path.replace(/\\/g, '/');
+//             const urlVideo = 'https://www.netzoonback.siidevelopment.com/' + video.path.replace(/\\/g, '/');
 //             vehicle.vedioUrl = urlVideo;
 //         }
 //         await vehicle.save();
@@ -891,7 +893,7 @@ export const editVehicle = async (req, res) => {
     if (req.files["image"]) {
       const image = req.files["image"][0];
       const urlImage =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         image.path.replace(/\\/g, "/");
       vehicle.imageUrl = urlImage;
     }
@@ -913,7 +915,7 @@ export const editVehicle = async (req, res) => {
         }
 
         const imageUrl =
-          "https://netzoondev.siidevelopment.com/" +
+          "https://www.netzoonback.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
         vehicle.carImages = imageUrls;
@@ -922,7 +924,7 @@ export const editVehicle = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       vehicle.vedioUrl = urlVideo;
     }

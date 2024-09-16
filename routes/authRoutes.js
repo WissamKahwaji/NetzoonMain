@@ -29,6 +29,7 @@ import {
   refreshAccessToken,
   removeProductFromFavorites,
   resetPassword,
+  search,
   // searchOnUser,
   signUp,
   signin,
@@ -37,6 +38,10 @@ import {
 } from "../controllers/userCtrl.js";
 import { stripeAccount } from "../services/stripe_service.js";
 import auth from "../middlewares/auth.js";
+import passport from "../services/passport.js";
+import jwt from "jsonwebtoken";
+import userModel from "../models/userModel.js";
+import axios from "axios";
 
 const router = express.Router();
 
@@ -53,6 +58,144 @@ const userType = [
   "trader",
   "delivery_company",
 ];
+
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/signin" }),
+  async (req, res) => {
+    try {
+      // Generate a JWT token
+      const token = jwt.sign(
+        { email: req.user.email, id: req.user._id },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: "7d" }
+      );
+
+      // Find the user in the database to get userName
+      const user = await userModel.findById(req.user._id);
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const getUserResponse = await axios.get(
+        `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
+        {
+          headers: {
+            "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
+          },
+        }
+      );
+
+      if (getUserResponse.status === 200) {
+        const users = getUserResponse.data.users;
+        const userExists = users.some(
+          existingUser => existingUser.user_id === req.user.username
+        );
+        if (userExists) {
+          console.log("in");
+        } else {
+          const payload = {
+            user_id: req.user.username,
+            nickname: req.user.username,
+            profile_url: req.user.profilePhoto ?? "",
+            issue_access_token: true,
+          };
+          const response = await axios.post(
+            `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
+            payload,
+            {
+              headers: {
+                "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
+              },
+            }
+          );
+        }
+      }
+
+      // Redirect to the frontend with the token, userName, and email
+      res.redirect(
+        `https://www.netzoonweb.siidevelopment.com/signin?token=${token}&username=${user.username}&userId=${user._id}`
+      );
+    } catch (err) {
+      console.error("Error in Google callback:", err);
+      res.redirect("https://www.netzoonweb.siidevelopment.com/signin");
+    }
+  }
+);
+
+router.get(
+  "/auth/facebook",
+  passport.authenticate("facebook", { scope: ["email"] })
+);
+
+router.get(
+  "/auth/facebook/callback",
+  passport.authenticate("facebook", { failureRedirect: "/signin" }),
+  async (req, res) => {
+    try {
+      // Generate JWT
+      const token = jwt.sign(
+        { email: req.user.email, id: req.user._id },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: "7d" }
+      );
+
+      // Sendbird integration
+      const user = await userModel.findById(req.user._id);
+
+      if (!user) throw new Error("User not found");
+
+      const getUserResponse = await axios.get(
+        `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
+        {
+          headers: {
+            "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
+          },
+        }
+      );
+
+      if (getUserResponse.status === 200) {
+        const users = getUserResponse.data.users;
+        const userExists = users.some(
+          existingUser => existingUser.user_id === req.user.username
+        );
+        if (userExists) {
+          console.log("in");
+        } else {
+          const payload = {
+            user_id: req.user.username,
+            nickname: req.user.username,
+            profile_url: req.user.profilePhoto ?? "",
+            issue_access_token: true,
+          };
+          const response = await axios.post(
+            `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
+            payload,
+            {
+              headers: {
+                "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
+              },
+            }
+          );
+        }
+      }
+
+      // Redirect to frontend with token
+      res.redirect(
+        `https://www.netzoonweb.siidevelopment.com/signin?token=${token}&username=${user.username}&userId=${user._id}`
+      );
+    } catch (err) {
+      console.error("Error in Facebook callback:", err);
+      res.redirect("https://www.netzoonweb.siidevelopment.com/signin");
+    }
+  }
+);
 
 router.post(
   "/register",
@@ -120,6 +263,8 @@ router.delete(
 router.put("/toggleFollow/:otherUserId", toggleFollow);
 router.get("/getUserFollowings/:userId", getUserFollowings);
 router.get("/getUserFollowers/:userId", getUserFollowers);
+
+router.get("/search", search);
 
 router.post("/:userId/addvisitor", addNumberOfVisitors);
 router.get("/:id/visitors", getVisitors);

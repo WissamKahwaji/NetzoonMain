@@ -79,6 +79,7 @@ export const saveOrder = async (req, res) => {
     }
 
     for (const productItem of products) {
+      console.log(productItem.product);
       const product = await Product.findById(productItem.product);
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
@@ -121,6 +122,10 @@ export const saveOrder = async (req, res) => {
     });
     const fee = await feesModel.findOne();
     const sellerfee = fee.feesFromSeller || 3;
+    const client = await userModel.findById(clientId);
+    if (!client) {
+      return res.status(404).json({ message: "client not found" });
+    }
     let calculatePercentage;
     if (
       client.userType == "trader" ||
@@ -142,10 +147,7 @@ export const saveOrder = async (req, res) => {
         model: "Products",
         select: "name",
       });
-    const client = await userModel.findById(clientId);
-    if (!client) {
-      return res.status(404).json({ message: "client not found" });
-    }
+
     let updatedBalance;
     let calculateBalance;
     const netzoonBalance = client.netzoonBalance;

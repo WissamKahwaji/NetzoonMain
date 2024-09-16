@@ -4,6 +4,12 @@ import { Product } from "../../models/product/product.js";
 import { deleteFile } from "../../utils/file.js";
 import mongoose from "mongoose";
 import userModel from "../../models/userModel.js";
+import dotenv from "dotenv";
+import Stripe from "stripe";
+
+dotenv.config();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST);
 // import upload from "../../middlewares/upload.js";
 // import multer from "multer";
 
@@ -316,7 +322,8 @@ export const addProduct = async (req, res) => {
     }
 
     const urlImage =
-      "https://netzoondev.siidevelopment.com/" + image.path.replace(/\\/g, "/");
+      "https://www.netzoonback.siidevelopment.com/" +
+      image.path.replace(/\\/g, "/");
 
     // Find department by name
     const department = await Departments.findOne({ name: departmentName });
@@ -380,7 +387,7 @@ export const addProduct = async (req, res) => {
         }
 
         const imageUrl =
-          "https://netzoondev.siidevelopment.com/" +
+          "https://www.netzoonback.siidevelopment.com/" +
           image.path.replace(/\\/g, "/");
         imageUrls.push(imageUrl);
         productData.images = imageUrls;
@@ -391,7 +398,7 @@ export const addProduct = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       productData.vedioUrl = urlVideo;
     }
@@ -399,7 +406,8 @@ export const addProduct = async (req, res) => {
     if (req.files["gif"]) {
       const gif = req.files["gif"][0];
       const gifUrl =
-        "https://netzoondev.siidevelopment.com/" + gif.path.replace(/\\/g, "/");
+        "https://www.netzoonback.siidevelopment.com/" +
+        gif.path.replace(/\\/g, "/");
       productData.gifUrl = gifUrl;
     }
 
@@ -453,7 +461,7 @@ export const editProduct = async (req, res) => {
     if (req.files && req.files["image"]) {
       const profilePhoto = req.files["image"][0];
       urlImage =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         profilePhoto.path.replace(/\\/g, "/");
     }
     // const image = req.files['image'][0];
@@ -461,7 +469,7 @@ export const editProduct = async (req, res) => {
     //     return res.status(404).json({ message: 'Attached file is not an image.' });
     // }
 
-    // const urlImage = 'https://netzoondev.siidevelopment.com/' + image.path.replace(/\\/g, '/');
+    // const urlImage = 'https://www.netzoonback.siidevelopment.com/' + image.path.replace(/\\/g, '/');
     let updatedProduct;
     if (req.files && req.files["image"]) {
       updatedProduct = await Product.findByIdAndUpdate(
@@ -515,7 +523,7 @@ export const editProduct = async (req, res) => {
     if (req.files["video"]) {
       const video = req.files["video"][0];
       const urlVideo =
-        "https://netzoondev.siidevelopment.com/" +
+        "https://www.netzoonback.siidevelopment.com/" +
         video.path.replace(/\\/g, "/");
       updatedProduct.vedioUrl = urlVideo;
     }
@@ -523,7 +531,8 @@ export const editProduct = async (req, res) => {
     if (req.files["gif"]) {
       const gif = req.files["gif"][0];
       const gifUrl =
-        "https://netzoondev.siidevelopment.com/" + gif.path.replace(/\\/g, "/");
+        "https://www.netzoonback.siidevelopment.com/" +
+        gif.path.replace(/\\/g, "/");
       updatedProduct.gifUrl = gifUrl;
     }
 
@@ -586,7 +595,9 @@ export const rateProduct = async (req, res) => {
       rate.user.equals(userId)
     );
     if (alreadyRated) {
-      return res.status(400).json("You have already rated this service");
+      return res
+        .status(400)
+        .json({ message: "You have already rated this service" });
     }
 
     // Validate the rating value (assumed to be between 1 and 5)
@@ -770,9 +781,44 @@ export const getProductByCategory = async (req, res) => {
     const products = await Product.find({
       category: categoryId,
       country: country,
-    });
+    })
+      .populate("owner", "-password")
+      .populate("category", "name department");
     return res.status(200).json(products);
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+
+export const createPaymentIntent = async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount * 100,
+      currency: "aed",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+    console.log(paymentIntent);
+    res.status(200).json({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json("Something went wrong");
+  }
+};
+
+export const getConfig = async (req, res) => {
+  try {
+    const publicKey = process.env.STRIPE_PUBLIC_KEY_TEST;
+    res.status(200).json({
+      publicKey: publicKey,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json("Something went wrong");
   }
 };

@@ -2,6 +2,7 @@ import express from "express";
 import {
   addCategory,
   addProduct,
+  createPaymentIntent,
   deleteCategory,
   deleteProduct,
   editCategory,
@@ -12,6 +13,7 @@ import {
   getAllProducts,
   getCategoriesByDepartment,
   getCategoryById,
+  getConfig,
   getProductByCategory,
   getProductById,
   getProductTotalRating,
@@ -44,5 +46,7 @@ router.post("/:departmentId/add-category", auth, addCategory);
 router.put("/edit-category/:categoryId", auth, editCategory);
 router.delete("/delete-category/:categoryId", auth, deleteCategory);
 router.get("/:categoryId/all-products", getProductByCategory);
+router.get("/config", getConfig);
+router.post("/create-payment", createPaymentIntent);
 
 export default router;
