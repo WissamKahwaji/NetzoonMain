@@ -30,6 +30,7 @@ const userSchema = mongoose.Schema(
         "trader",
         "delivery_company",
       ],
+      default: "user",
     },
     firstMobile: {
       type: String,
