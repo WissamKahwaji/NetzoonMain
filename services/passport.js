@@ -9,7 +9,7 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL:
-        "https://netzoonback.siidevelopment.com/user/auth/google/callback",
+        "https://www.netzoonback.siidevelopment.com/user/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -48,7 +48,7 @@ passport.use(
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
       callbackURL:
-        "https://netzoonback.siidevelopment.com/user/auth/facebook/callback",
+        "https://www.netzoonback.siidevelopment.com/user/auth/facebook/callback",
       profileFields: ["id", "emails", "name", "picture.type(large)"],
     },
     async (accessToken, refreshToken, profile, done) => {
