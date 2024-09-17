@@ -65,7 +65,9 @@ passport.use(
         const newUser = await userModel.create({
           username: `${profile.name.givenName} ${profile.name.familyName}`,
           fullName: `${profile.name.givenName} ${profile.name.familyName}`,
-          email: profile.emails ? profile.emails[0].value : "",
+          email: profile.emails
+            ? profile.emails[0].value
+            : "testfff@testfff.com",
           profilePhoto: profile.photos ? profile.photos[0].value : "",
           password: "",
           userType: "user",
