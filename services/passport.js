@@ -68,7 +68,7 @@ passport.use(
           email: profile.emails
             ? profile.emails[0].value
             : "testfff@testfff.com",
-          profilePhoto: "https://i.imgur.com/hnIl9uM.jpg",
+          profilePhoto: profile.photos ? profile.photos[0].value : "",
           password: "",
           userType: "user",
           bio: "",

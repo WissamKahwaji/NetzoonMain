@@ -136,7 +136,7 @@ router.get(
 
 router.get(
   "/auth/facebook/callback",
-  passport.authenticate("facebook", { failureRedirect: "/home" }),
+  passport.authenticate("facebook", { failureRedirect: "/signin" }),
   async (req, res) => {
     try {
       // Generate JWT
