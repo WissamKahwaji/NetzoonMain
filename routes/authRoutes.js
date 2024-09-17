@@ -136,7 +136,7 @@ router.get(
 
 router.get(
   "/auth/facebook/callback",
-  passport.authenticate("facebook", { failureRedirect: "/signin" }),
+  passport.authenticate("facebook", { failureRedirect: "/home" }),
   async (req, res) => {
     try {
       // Generate JWT
@@ -187,7 +187,9 @@ router.get(
       }
 
       // Redirect to frontend with token
-      res.redirect(`https://www.netzoonweb.siidevelopment.com/home`);
+      res.redirect(
+        `https://www.netzoonweb.siidevelopment.com/signin?token=${token}&username=${user.username}&userId=${user._id}`
+      );
     } catch (err) {
       console.error("Error in Facebook callback:", err);
       res.redirect("https://www.netzoonweb.siidevelopment.com/signin");
