@@ -5,6 +5,12 @@ import AppleStrategy from "passport-apple";
 import jwt from "jsonwebtoken";
 
 import userModel from "../models/userModel.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
 
 passport.use(
   new AppleStrategy(
@@ -12,7 +18,8 @@ passport.use(
       clientID: process.env.APPLE_CLIENT_ID,
       teamID: process.env.APPLE_TEAM_ID,
       keyID: process.env.APPLE_KEY_ID,
-      privateKeyLocation: "./AuthKey_7N97LSR4PQ.p8", // Path to your .p8 key file
+      // privateKeyLocation: "./AuthKey_7N97LSR4PQ.p8", // Path to your .p8 key file
+      privateKeyString: process.env.APPLE_PRIVATE_KEY_STRING,
       callbackURL:
         "https://www.netzoonback.siidevelopment.com/user/auth/apple/callback",
       passReqToCallback: true,
