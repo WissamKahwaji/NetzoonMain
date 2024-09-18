@@ -205,7 +205,7 @@ router.get(
 
 router.get("/auth/apple", passport.authenticate("apple"));
 
-router.get(
+router.post(
   "/auth/apple/callback",
   passport.authenticate("apple", { failureRedirect: "/signin" }),
   async (req, res) => {
