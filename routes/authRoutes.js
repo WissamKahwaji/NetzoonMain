@@ -153,41 +153,41 @@ router.get(
 
       if (!user) throw new Error("User not found");
 
-      const getUserResponse = await axios.get(
-        `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
-        {
-          headers: {
-            "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
-          },
-        }
-      );
+      // const getUserResponse = await axios.get(
+      //   `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
+      //   {
+      //     headers: {
+      //       "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
+      //     },
+      //   }
+      // );
 
-      if (getUserResponse.status === 200) {
-        const users = getUserResponse.data.users;
-        const userExists = users.some(
-          existingUser => existingUser.user_id === req.user.username
-        );
-        if (userExists) {
-          console.log("in");
-        } else {
-          const username = req.user.username.replace(/[^a-zA-Z0-9_ ]/g, "");
-          const payload = {
-            user_id: username,
-            nickname: username,
-            profile_url: "https://i.imgur.com/hnIl9uM.jpg",
-            issue_access_token: true,
-          };
-          const response = await axios.post(
-            `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
-            payload,
-            {
-              headers: {
-                "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
-              },
-            }
-          );
-        }
-      }
+      // if (getUserResponse.status === 200) {
+      //   const users = getUserResponse.data.users;
+      //   const userExists = users.some(
+      //     existingUser => existingUser.user_id === req.user.username
+      //   );
+      //   if (userExists) {
+      //     console.log("in");
+      //   } else {
+      //     const username = req.user.username.replace(/[^a-zA-Z0-9_ ]/g, "");
+      //     const payload = {
+      //       user_id: username,
+      //       nickname: username,
+      //       profile_url: "https://i.imgur.com/hnIl9uM.jpg",
+      //       issue_access_token: true,
+      //     };
+      //     const response = await axios.post(
+      //       `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
+      //       payload,
+      //       {
+      //         headers: {
+      //           "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
+      //         },
+      //       }
+      //     );
+      //   }
+      // }
 
       // Redirect to frontend with token
       const redirectUrl = `https://www.netzoonweb.siidevelopment.com/signin?token=${encodeURIComponent(
