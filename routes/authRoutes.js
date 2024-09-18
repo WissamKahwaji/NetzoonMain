@@ -137,7 +137,7 @@ router.get(
 router.get(
   "/auth/facebook/callback",
   passport.authenticate("facebook", {
-    failureRedirect: "https://www.netzoonweb.siidevelopment.com",
+    failureRedirect: "https://www.netzoonweb.siidevelopment.com/categories",
   }),
   async (req, res) => {
     try {
