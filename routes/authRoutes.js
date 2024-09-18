@@ -137,7 +137,7 @@ router.get(
 router.get(
   "/auth/facebook/callback",
   passport.authenticate("facebook", {
-    failureRedirect: "https://www.netzoonweb.siidevelopment.com/categories",
+    failureRedirect: "https://www.netzoonweb.siidevelopment.com/signin",
   }),
   async (req, res) => {
     try {
@@ -153,40 +153,40 @@ router.get(
 
       if (!user) throw new Error("User not found");
 
-      // const getUserResponse = await axios.get(
-      //   `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
-      //   {
-      //     headers: {
-      //       "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
-      //     },
-      //   }
-      // );
+      const getUserResponse = await axios.get(
+        `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
+        {
+          headers: {
+            "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
+          },
+        }
+      );
 
-      // if (getUserResponse.status === 200) {
-      //   const users = getUserResponse.data.users;
-      //   const userExists = users.some(
-      //     existingUser => existingUser.user_id === req.user.username
-      //   );
-      //   if (userExists) {
-      //     console.log("in");
-      //   } else {
-      //     const payload = {
-      //       user_id: req.user.username,
-      //       nickname: req.user.username,
-      //       profile_url: req.user.profilePhoto ?? "",
-      //       issue_access_token: true,
-      //     };
-      //     const response = await axios.post(
-      //       `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
-      //       payload,
-      //       {
-      //         headers: {
-      //           "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
-      //         },
-      //       }
-      //     );
-      //   }
-      // }
+      if (getUserResponse.status === 200) {
+        const users = getUserResponse.data.users;
+        const userExists = users.some(
+          existingUser => existingUser.user_id === req.user.username
+        );
+        if (userExists) {
+          console.log("in");
+        } else {
+          const payload = {
+            user_id: req.user.username,
+            nickname: req.user.username,
+
+            issue_access_token: true,
+          };
+          const response = await axios.post(
+            `https://api-D27C6110-9DB9-4EBE-AA85-CF39E2AF562E.sendbird.com/v3/users`,
+            payload,
+            {
+              headers: {
+                "Api-Token": "8431b9677570a63562158dc40c06675cdfc12c47",
+              },
+            }
+          );
+        }
+      }
 
       // Redirect to frontend with token
       const redirectUrl = `https://www.netzoonweb.siidevelopment.com/signin?token=${encodeURIComponent(
@@ -197,7 +197,7 @@ router.get(
       res.redirect(redirectUrl);
     } catch (err) {
       console.error("Error in Facebook callback:", err);
-      res.redirect("https://www.netzoonweb.siidevelopment.com");
+      res.redirect("https://www.netzoonweb.siidevelopment.com/signin");
     }
   }
 );
