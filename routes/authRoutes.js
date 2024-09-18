@@ -171,9 +171,9 @@ router.get(
           console.log("in");
         } else {
           const payload = {
-            user_id: req.user.username,
-            nickname: req.user.username,
-
+            user_id: "wissam kahwaji",
+            nickname: "wissam kahwaji",
+            profile_url: "https://i.imgur.com/hnIl9uM.jpg",
             issue_access_token: true,
           };
           const response = await axios.post(
