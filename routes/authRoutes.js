@@ -187,9 +187,11 @@ router.get(
       }
 
       // Redirect to frontend with token
-      res.redirect(
-        `https://www.netzoonweb.siidevelopment.com/signin?token=${token}&username=${user.username}&userId=${user._id}`
-      );
+      const redirectUrl = `https://www.netzoonweb.siidevelopment.com/signin?token=${encodeURIComponent(
+        token
+      )}&username=${encodeURIComponent(
+        user.username
+      )}&userId=${encodeURIComponent(user._id)}`;
     } catch (err) {
       console.error("Error in Facebook callback:", err);
       res.redirect("https://www.netzoonweb.siidevelopment.com/signin");
