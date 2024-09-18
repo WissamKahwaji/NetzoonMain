@@ -170,9 +170,10 @@ router.get(
         if (userExists) {
           console.log("in");
         } else {
+          const username = req.user.username.replace(/[^a-zA-Z0-9_]/g, "");
           const payload = {
-            user_id: `${req.user.username ?? ""}`,
-            nickname: `${req.user.username ?? ""}`,
+            user_id: username,
+            nickname: username,
             profile_url: "https://i.imgur.com/hnIl9uM.jpg",
             issue_access_token: true,
           };
