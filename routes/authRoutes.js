@@ -171,8 +171,8 @@ router.get(
           console.log("in");
         } else {
           const payload = {
-            user_id: "wissam kahwaji",
-            nickname: "wissam kahwaji",
+            user_id: req.user.username,
+            nickname: req.user.username,
             profile_url: "https://i.imgur.com/hnIl9uM.jpg",
             issue_access_token: true,
           };
