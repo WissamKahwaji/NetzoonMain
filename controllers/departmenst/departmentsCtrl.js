@@ -9,7 +9,7 @@ import Stripe from "stripe";
 
 dotenv.config();
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_PROD);
 // import upload from "../../middlewares/upload.js";
 // import multer from "multer";
 
@@ -813,7 +813,7 @@ export const createPaymentIntent = async (req, res) => {
 
 export const getConfig = async (req, res) => {
   try {
-    const publicKey = process.env.STRIPE_PUBLIC_KEY_TEST;
+    const publicKey = process.env.STRIPE_PUBLIC_KEY_PROD;
     res.status(200).json({
       publicKey: publicKey,
     });

@@ -4,15 +4,15 @@ const aramexApiUrl =
   "https://ws.aramex.net/ShippingAPI.V2/RateCalculator/Service_1_0.svc/json/CalculateRate";
 
 const pickUpUrl =
-  "https://ws.sbx.aramex.net/ShippingAPI.V2/Shipping/Service_1_0.svc/json/CreatePickup";
+  "https://ws.aramex.net/ShippingAPI.V2/Shipping/Service_1_0.svc/json/CreatePickup";
 const shipmentUrl =
-  "https://ws.sbx.aramex.net/ShippingAPI.V2/Shipping/Service_1_0.svc/json/CreateShipments";
+  "https://ws.aramex.net/ShippingAPI.V2/Shipping/Service_1_0.svc/json/CreateShipments";
 
 const fetchCitiesUrl =
   "https://ws.aramex.net/ShippingAPI.V2/Location/Service_1_0.svc/json/FetchCities";
 
 const trachPickupUrl =
-  "https://ws.sbx.aramex.net/ShippingAPI.V2/Tracking/Service_1_0.svc/json/TrackPickup";
+  "https://ws.aramex.net/ShippingAPI.V2/Tracking/Service_1_0.svc/json/TrackPickup";
 
 export const calculateRateController = async (req, res) => {
   try {
