@@ -222,6 +222,7 @@ const userSchema = mongoose.Schema(
     resetToken: String,
     resetTokenExpiration: Date,
     refreshToken: { type: String },
+    appleId: String,
   },
   {
     // Set the select option to exclude the password field by default

@@ -203,6 +203,29 @@ router.get(
   }
 );
 
+router.get("/auth/apple", passport.authenticate("apple"));
+
+router.get(
+  "/auth/apple/callback",
+  passport.authenticate("apple", { failureRedirect: "/signin" }),
+  async (req, res) => {
+    try {
+      const token = jwt.sign(
+        { email: req.user.email, id: req.user._id },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: "7d" }
+      );
+
+      // Redirect to frontend with the token and user details
+      res.redirect(
+        `https://www.netzoonweb.siidevelopment.com/signin?token=${token}&username=${req.user.username}&userId=${req.user._id}`
+      );
+    } catch (err) {
+      res.redirect("https://www.netzoonweb.siidevelopment.com/signin");
+    }
+  }
+);
+
 router.post(
   "/register",
   [
