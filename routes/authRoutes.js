@@ -170,7 +170,7 @@ router.get(
         if (userExists) {
           console.log("in");
         } else {
-          const username = req.user.username.replace(/[^a-zA-Z0-9_]/g, "");
+          const username = req.user.username.replace(/[^a-zA-Z0-9_ ]/g, "");
           const payload = {
             user_id: username,
             nickname: username,
