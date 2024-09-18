@@ -169,9 +169,11 @@ export const getAllDealsByCat = async (req, res) => {
 export const getDealsItemsByCategory = async (req, res) => {
   try {
     const { country, category } = req.query;
+    const currentDate = new Date();
     const filterCriteria = {
       category: category,
       country: country,
+      endDate: { $gte: currentDate },
     };
     const dealsItems = await DealsItems.find(filterCriteria).populate(
       "owner",
