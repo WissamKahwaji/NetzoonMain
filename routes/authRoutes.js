@@ -120,11 +120,11 @@ router.get(
 
       // Redirect to the frontend with the token, userName, and email
       res.redirect(
-        `https://www.netzoonweb.siidevelopment.com/signin?token=${token}&username=${user.username}&userId=${user._id}`
+        `https://www.netzoon.com/signin?token=${token}&username=${user.username}&userId=${user._id}`
       );
     } catch (err) {
       console.error("Error in Google callback:", err);
-      res.redirect("https://www.netzoonweb.siidevelopment.com/signin");
+      res.redirect("https://www.netzoon.com/signin");
     }
   }
 );
@@ -137,7 +137,7 @@ router.get(
 router.get(
   "/auth/facebook/callback",
   passport.authenticate("facebook", {
-    failureRedirect: "https://www.netzoonweb.siidevelopment.com/signin",
+    failureRedirect: "https://www.netzoon.com/signin",
   }),
   async (req, res) => {
     try {
@@ -190,7 +190,7 @@ router.get(
       // }
 
       // Redirect to frontend with token
-      const redirectUrl = `https://www.netzoonweb.siidevelopment.com/signin?token=${encodeURIComponent(
+      const redirectUrl = `https://www.netzoon.com/signin?token=${encodeURIComponent(
         token
       )}&username=${encodeURIComponent(
         user.username
@@ -198,7 +198,7 @@ router.get(
       res.redirect(redirectUrl);
     } catch (err) {
       console.error("Error in Facebook callback:", err);
-      res.redirect("https://www.netzoonweb.siidevelopment.com/signin");
+      res.redirect("https://www.netzoon.com/signin");
     }
   }
 );
@@ -218,10 +218,10 @@ router.post(
 
       // Redirect to frontend with the token and user details
       res.redirect(
-        `https://www.netzoonweb.siidevelopment.com/signin?token=${token}&username=${req.user.username}&userId=${req.user._id}`
+        `https://www.netzoon.com/signin?token=${token}&username=${req.user.username}&userId=${req.user._id}`
       );
     } catch (err) {
-      res.redirect("https://www.netzoonweb.siidevelopment.com/signin");
+      res.redirect("https://www.netzoon.com/signin");
     }
   }
 );
