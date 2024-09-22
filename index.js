@@ -113,6 +113,8 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json({ limit: "2gb" }));
+app.use(express.urlencoded({ limit: "2gb", extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/images", express.static(path.join(__dirname, "images")));
